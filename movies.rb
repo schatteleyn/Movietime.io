@@ -31,6 +31,7 @@ def films(title)
     parsing(json)
   else
   	puts "Multiple choice to parse."
+    # Have to find a way to parse the titles
   end
 end
 
@@ -41,13 +42,12 @@ def parsing(json)
     puts id = "id: #{i}"
     print movie['name']; print ' S:'; print movie['seeders']; print ' L:'; print movie['leechers']; print ' '; puts movie['size']
     magnet = movie['magnet']
-    sources[i] = movie
+    sources[i] = magnet
     i += 1
   end
-  puts "Which torrent to dowmload ?"
+  puts "Which torrent to download ?"
   input = gets.chomp.to_i
-  puts sources[input]
-  #Net::HTTP.get(URI.parse(sources[input])) # Link to download. Doesn't work.
+  `open #{sources[input]}` # Link to download.
 end
 
 puts movie_list = pp(get_movies())
