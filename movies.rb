@@ -52,13 +52,18 @@ end
 
 puts movie_list = pp(get_movies())
 
-puts 'Type the number of the movie you want, or r to get 10 new movies: '
+puts 'Type the number of the movie you want, or any other key to get 10 new movies: '
 input = gets.chomp
 
-if input == 'r'
-  puts "Feature not supported for now."
-else
+while input == 'r'
+  puts movie_list = pp(get_movies())
+  puts 'Type the number of the movie you want, or any other key to get 10 new movies: ' 
+  input = gets.chomp
+end
+if input.between?('1','10')
 	input = input.to_i
   title = movie_list[input].gsub(' ', '+')
   puts films(title)
+else
+	puts 'You press the wrong key. Press r to reload, or the id of the movie.'
 end
