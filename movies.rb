@@ -6,6 +6,7 @@ require 'pp'
 
 URL = "http://movietime.cc/"
 API = "http://api.movies.io/movies/search?q="
+SEARCH = "http://movies.io/m/search?q="
 
 def get_movies()
   movies = {}
@@ -18,18 +19,22 @@ def get_movies()
   return movies
 end
 
-def parsing(json)
+def parsing(json, title)
   i = 1
   movie_list = {}
-  json['movies'].each do |movie|
-    print id = "id:#{i} - "
-    puts movie['movie']['title']
-    movie_list[i] = movie
-    i += 1
-  end
-  puts "Which movie is it ?"
-  input = gets.chomp.to_i
+  if !json['movies'].nil?
+    json['movies'].each do |movie|
+      print id = "id:#{i} - "
+      puts movie['movie']['title']
+      movie_list[i] = movie
+      i += 1
+    end
+  input = gets.strip.to_i
   get_torrent(movie_list[input])
+  else
+    search = URI.escape(SEARCH+title)
+    `open #{search}` # Change this command if you're on linux
+  end
 end
 
 def get_torrent(json)
@@ -37,32 +42,32 @@ def get_torrent(json)
   sources = {}
   json['movie']['sources']['torrents'].each do |torrent|
     puts "id: #{i}"
-    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; puts torrent['size']
+    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; puts torrent['size'].to_i / (1024*1024) + 'MB'
     magnet = torrent['magnet']
     sources[i] = magnet
     i += 1
   end
   puts "Which torrent to download ?"
-  input = gets.chomp.to_i
+  input = gets.strip.to_i
   `open #{sources[input]}` # Link to download. Change the open command by the one of your system if your on Linux
 end
 
 puts movie_list = pp(get_movies())
 
 puts 'Type the number of the movie you want, or "r" to get 10 new movies: '
-input = gets.chomp
+input = gets.strip
 
 while input == 'r'
   puts movie_list = pp(get_movies())
   puts 'Type the number of the movie you want, or "r" to get 10 new movies: ' 
-  input = gets.chomp
+  input = gets.strip
 end
 input = input.to_i
 if input.between?(1,10)
   puts title = movie_list[input]
   resp = Net::HTTP.get(URI.parse(URI.escape(API+title)))
   json = JSON.parse(resp)
-  puts parsing(json)
+  puts parsing(json, title)
 else
 	puts 'You press the wrong key. Press r to reload, or the id of the movie.'
 end
