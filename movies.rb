@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'net/http'
-require 'pp'
-require 'nokogiri'
 require 'json'
 
 URL = "http://movietime.cc/"
-URL2 = "http://movies.io/m/search?utf8=%E2%9C%93&q="
+API = "http://api.movies.io/movies/search?q="
 
 def get_movies()
   movies = {}
@@ -19,35 +17,33 @@ def get_movies()
   return movies
 end
 
-def films(title)
-  # Parsing and scrapping the JSON attributes
-  data = Net::HTTP.get(URI.parse(URL2+title))
-  if data.match(/redirected/)
-  	doc = Nokogiri::HTML.parse(data)
-  	l = doc.css('body a').map { |link| link['href'] }
-  	url_movie = l[0]
-  	resp = Net::HTTP.get(URI.parse(url_movie+"/sources.json"))
-    json = JSON.parse(resp)
-    parsing(json)
-  else
-  	puts "Multiple choice to parse."
-    # Have to find a way to parse the titles
-  end
-end
-
 def parsing(json)
   i = 1
+  movie_list = {}
+  json['movies'].each do |movie|
+    print id = "id:#{i} - "
+    puts movie['movie']['title']
+    movie_list[i] = movie
+    i += 1
+  end
+  puts "Which movie is it ?"
+  input = gets.chomp.to_i
+  get_torrent(movie_list[input])
+end
+
+def get_torrent(json)
+  i = 1
   sources = {}
-  json['torrents'].each do |movie|
-    puts id = "id: #{i}"
-    print movie['name']; print ' S:'; print movie['seeders']; print ' L:'; print movie['leechers']; print ' '; puts movie['size']
-    magnet = movie['magnet']
+  json['movie']['sources']['torrents'].each do |torrent|
+    puts "id: #{i}"
+    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; puts torrent['size']
+    magnet = torrent['magnet']
     sources[i] = magnet
     i += 1
   end
   puts "Which torrent to download ?"
   input = gets.chomp.to_i
-  `open #{sources[input]}` # Link to download.
+  `open #{sources[input]}` # Link to download. Change the open command by the one of your system if your on Linux
 end
 
 puts movie_list = pp(get_movies())
@@ -60,10 +56,12 @@ while input == 'r'
   puts 'Type the number of the movie you want, or any other key to get 10 new movies: ' 
   input = gets.chomp
 end
-if input.between?('1','10')
-	input = input.to_i
-  title = movie_list[input].gsub(' ', '+')
-  puts films(title)
+input = input.to_i
+if input.between?(1,10)
+  puts title = movie_list[input]
+  resp = Net::HTTP.get(URI.parse(URI.escape(API+title)))
+  json = JSON.parse(resp)
+  puts parsing(json)
 else
 	puts 'You press the wrong key. Press r to reload, or the id of the movie.'
 end
