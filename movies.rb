@@ -2,6 +2,7 @@
 
 require 'net/http'
 require 'json'
+require 'pp'
 
 URL = "http://movietime.cc/"
 API = "http://api.movies.io/movies/search?q="
@@ -48,12 +49,12 @@ end
 
 puts movie_list = pp(get_movies())
 
-puts 'Type the number of the movie you want, or any other key to get 10 new movies: '
+puts 'Type the number of the movie you want, or "r" to get 10 new movies: '
 input = gets.chomp
 
 while input == 'r'
   puts movie_list = pp(get_movies())
-  puts 'Type the number of the movie you want, or any other key to get 10 new movies: ' 
+  puts 'Type the number of the movie you want, or "r" to get 10 new movies: ' 
   input = gets.chomp
 end
 input = input.to_i
