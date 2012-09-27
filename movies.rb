@@ -69,5 +69,5 @@ if input.between?(1,10)
   json = JSON.parse(resp)
   puts parsing(json, title)
 else
-	puts 'You press the wrong key. Press r to reload, or the id of the movie.'
+	puts 'You pressed the wrong key. Press r to reload, or the id of the movie.'
 end
