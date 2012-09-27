@@ -25,7 +25,7 @@ def parsing(json, title)
   if !json['movies'].nil?
     json['movies'].each do |movie|
       print id = "id:#{i} - "
-      puts movie['movie']['title']
+      puts movie['title']
       movie_list[i] = movie
       i += 1
     end
@@ -40,9 +40,9 @@ end
 def get_torrent(json)
   i = 1
   sources = {}
-  json['movie']['sources']['torrents'].each do |torrent|
+  json['sources']['torrents'].each do |torrent|
     puts "id: #{i}"
-    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; puts torrent['size'].to_i / (1024*1024) + 'MB'
+    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; print torrent['size'].to_i / (1024*1024); puts ' MB' 
     magnet = torrent['magnet']
     sources[i] = magnet
     i += 1
