@@ -5,6 +5,6 @@ Enjoy !
 
 NB:
 
-If you are on Linux, you have to change the 'open' command at the line 52 by the command to open your torrent downloader, and 36 for the browser if there is no response from the API. Open is a mac OS X command.  
+If you are on Linux, you have to change the 'open' command by the command to open your torrent downloader and your browser (in case there's no response from the API). Open is a mac OS X command.  
 If the API send an error message, the script automatically open the browser on the search page of movies.io.  
 The API of movies.io is still under development so don't blame me if you don't find the movie :D  
