@@ -3,9 +3,20 @@
 require 'net/http'
 require 'json'
 
-URL = "http://movietime.cc/"
+URL = "http://dstbny.com/movies/"
 API = "http://api.movies.io/movies/search?q="
 SEARCH = "http://movies.io/m/search?q="
+
+def size_convertor(size)
+  mb = (1024*1024).to_f
+  gb = (mb*1024).to_f
+
+  if size/mb < 1000
+  	return (size/mb).round(2).to_s + "MB"
+  else
+  	return (size/gb).round(2).to_s + "GB"
+  end
+end
 
 def get_movies()
   movies = {}
@@ -31,7 +42,8 @@ def parsing(json, title)
       puts movie['title']
       movie_list[i] = movie
       i += 1
-    end
+  end
+  puts "Choose your movie:"
   input = gets.strip.to_i
   get_torrent(movie_list[input])
   else
@@ -45,7 +57,7 @@ def get_torrent(json)
   sources = {}
   json['sources']['torrents'].each do |torrent|
     puts "id: #{i}"
-    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; print torrent['size'].to_i / (1024*1024); puts ' MB' 
+    print torrent['name']; print ' S:'; print torrent['seeders']; print ' L:'; print torrent['leechers']; print ' '; puts size_convertor(torrent['size'].to_f)
     magnet = torrent['magnet']
     sources[i] = magnet
     i += 1
