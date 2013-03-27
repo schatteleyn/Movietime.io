@@ -1,3 +1,7 @@
+DISCLAIMER:  
+Well, couple of months ago, movietime.cc change address. Now it seems to have disappeared from the internet, so this script is no longer useful. That's sad
+
+Original README:  
 When you're running out of idea to watch a movie, you can use movietime.cc that gives you a list of 10 great movies.  
 When you want to download the movie, you can use the great movies.io.  
 And to do all of this at once, you can use this ruby program.  
